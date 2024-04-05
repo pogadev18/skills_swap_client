@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
-import { Inter as FontSans } from 'next/font/google'
+import { Roboto } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 
 import { cn } from '@/lib/utils'
 
 import './globals.css'
 
-const fontSans = FontSans({
+const roboto = Roboto({
   subsets: ['latin'],
-  variable: '--font-sans'
+  weight: ['300', '400', '500', '700', '900']
 })
 
 export const metadata: Metadata = {
@@ -25,15 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider publishableKey={clerkPubKey} afterSignInUrl="/dashboard">
-      <html lang="en">
-        <body
-          className={cn(
-            'min-h-screen bg-background font-sans antialiased p-24',
-            fontSans.variable
-          )}
-        >
-          {children}
-        </body>
+      <html
+        className={cn('bg-background antialiased', roboto.className)}
+        lang="en"
+      >
+        <body>{children}</body>
       </html>
     </ClerkProvider>
   )
