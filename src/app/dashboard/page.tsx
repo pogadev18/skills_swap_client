@@ -7,7 +7,8 @@ export default async function DashboardPage() {
   const { getToken } = auth()
   const jwt = await getToken()
 
-  const res = await fetch('http://localhost:8080/test', {
+  // todo: change the server url
+  const res = await fetch('http://swapskillsapiurl.com', {
     headers: {
       Authorization: `Bearer ${jwt}`
     }
