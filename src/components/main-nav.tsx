@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
-import { HomeIcon, PersonIcon, ShuffleIcon } from '@radix-ui/react-icons'
+import { HomeIcon, UserRound, Handshake } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -25,13 +25,13 @@ export function MainNav({
       href: `/dashboard/profile`,
       label: 'Profile',
       active: pathname === `/dashboard/profile`,
-      icon: <PersonIcon className="mr-2 h-5 w-5" />
+      icon: <UserRound className="mr-2 h-5 w-5" />
     },
     {
       href: `/dashboard/matches`,
       label: 'Matches',
       active: pathname === `/dashboard/matches`,
-      icon: <ShuffleIcon className="mr-2 h-5 w-5" />
+      icon: <Handshake className="mr-2 h-5 w-5" />
     }
   ]
 

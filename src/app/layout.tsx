@@ -3,6 +3,7 @@ import { Roboto } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 
 import { cn } from '@/lib/utils'
+import { ToastProvider } from '@/providers/toast-provider'
 
 import './globals.css'
 
@@ -24,12 +25,18 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider publishableKey={clerkPubKey} afterSignInUrl="/dashboard">
+    <ClerkProvider
+      publishableKey={clerkPubKey}
+      afterSignInUrl="/dashboard/profile"
+    >
       <html
         className={cn('bg-background antialiased', roboto.className)}
         lang="en"
       >
-        <body>{children}</body>
+        <body>
+          {children}
+          <ToastProvider />
+        </body>
       </html>
     </ClerkProvider>
   )
