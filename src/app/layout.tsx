@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
-import { Inter as FontSans } from 'next/font/google'
+import { Roboto } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 
 import { cn } from '@/lib/utils'
+import { ToastProvider } from '@/providers/toast-provider'
 
 import './globals.css'
 
-const fontSans = FontSans({
+const roboto = Roboto({
   subsets: ['latin'],
-  variable: '--font-sans'
+  weight: ['300', '400', '500', '700', '900']
 })
 
 export const metadata: Metadata = {
@@ -24,15 +25,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider publishableKey={clerkPubKey} afterSignInUrl="/dashboard">
-      <html lang="en">
-        <body
-          className={cn(
-            'min-h-screen bg-background font-sans antialiased p-24',
-            fontSans.variable
-          )}
-        >
+    <ClerkProvider
+      publishableKey={clerkPubKey}
+      afterSignInUrl="/dashboard/profile"
+    >
+      <html
+        className={cn('bg-background antialiased', roboto.className)}
+        lang="en"
+      >
+        <body>
           {children}
+          <ToastProvider />
         </body>
       </html>
     </ClerkProvider>

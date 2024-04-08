@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div>
       <Button asChild>
-        <Link href="/dashboard">Get Started</Link>
+        <Link href="/dashboard/profile">Get Started</Link>
       </Button>
     </div>
   )
