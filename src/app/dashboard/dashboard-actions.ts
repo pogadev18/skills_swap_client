@@ -1,6 +1,6 @@
 'use sever'
 
-import { revalidatePath } from 'next/cache'
+// import { revalidatePath } from 'next/cache'
 import { api } from '@/lib/axiosConfig'
 
 // todo: generate types based on back-end schema
@@ -24,7 +24,7 @@ export async function updateUserBio({
   token
 }: UpdateUserBioParams) {
   const res = await api.put(
-    `/user/${userId}`,
+    `/users/${userId}`,
     {
       bio,
       meetingPreferance,
@@ -42,10 +42,20 @@ export async function updateUserBio({
 
 // this function runs on the server
 export async function getUserData(userId: string | null, token: string | null) {
-  const res = await api.get(`/user/${userId}`, {
+  const res = await api.get(`/users/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
+  return res.data
+}
+
+export async function getSkills(token: string | null) {
+  const res = await api.get('/skills', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
   return res.data
 }
