@@ -14,7 +14,7 @@ export default async function UserProfilePage() {
 
   return (
     <>
-      <h1 className="text-4xl mb-4">Your SkillsSwap Profile</h1>
+      <h1 className="text-4xl mb-4">My SkillsSwap Profile</h1>
       <p className="text-lg w-[1000px]">
         In the heart of SkillsSwap lies a world of endless possibilities, where
         every exchange transforms into a journey of learning and growth. This is

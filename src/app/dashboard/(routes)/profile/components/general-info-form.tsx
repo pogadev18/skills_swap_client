@@ -67,7 +67,7 @@ type FormSchemaValues = z.infer<typeof formSchema>
 export function UserGeneralInfoForm({
   initialBioData
 }: UserGeneralInfoFormProps) {
-  const { isLoaded, userId, getToken } = useAuth()
+  const { userId, getToken } = useAuth()
 
   const router = useRouter()
 

@@ -8,11 +8,13 @@ import {
   AlertCircleIcon,
   TrashIcon
 } from 'lucide-react'
+import { redirect, useRouter } from 'next/navigation'
 
 import toast from 'react-hot-toast'
 import * as z from 'zod'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useAuth } from '@clerk/nextjs'
 
 import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
@@ -35,11 +37,11 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage
+  FormLabel
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { updateUserSkills } from '@/app/dashboard/dashboard-actions'
 
 const skillObject = z.object({
   skillId: z.string().optional(),
@@ -72,7 +74,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function ProfileSkillsForm({ skills }: { skills: any }) {
+  const { userId, getToken } = useAuth()
+
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null)
+
+  const router = useRouter()
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -88,32 +94,79 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
     resolver: zodResolver(formSchema)
   })
 
-  const { errors } = form.formState
-
-  type FormSkill = {
-    label: string
-    value: string
-  }
-
-  const formSkills: FormSkill[] = skills.map(
-    (skill: { id: string; name: string }) => {
-      return {
-        label: skill.name,
-        value: skill.id
-      }
-    }
-  )
-
-  function onSubmit(data: FormValues) {
-    console.log('submitting', data)
-  }
+  const { errors, isSubmitting } = form.formState
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'skills'
   })
 
-  console.log('errors', errors)
+  type FormSkill = {
+    label: string
+    value: string
+    tagIds: string[]
+  }
+
+  const formSkills: FormSkill[] = skills.map(
+    (skill: { id: string; name: string; tagIds: string[] }) => {
+      return {
+        label: skill.name,
+        value: skill.id,
+        tagIds: skill.tagIds
+      }
+    }
+  )
+
+  const onSubmit = async (data: FormValues) => {
+    /* chain of events:
+      1. user selects a skill in the form -> data.skills[index].skillId
+      2. I need to find the tagIds for that skill -> skills[index].tagIds = [tagId1, tagId2, tagId3, etc...]
+      3. I need to store the tagIds in the form payload
+      4. send the payload to the server: 
+        {
+          skills: [
+            {
+              skillId: 'skillId1',
+              isOffered: true,
+              weight: 10,
+              tagIds: ['tagId1', 'tagId2', 'tagId3']
+            },
+            {
+              skillId: 'skillId2',
+              isOffered: false,
+              weight: 5,
+              tagIds: ['tagId4', 'tagId5']
+            }
+          ]
+        }
+    */
+
+    const finalPayload = data.skills.map((skill) => {
+      const selectedSkill = skills.find((s: any) => s.id === skill.skillId)
+
+      return {
+        ...skill,
+        tagIds: selectedSkill.tags.map((tag: any) => tag.id)
+      }
+    })
+
+    const token = await getToken()
+
+    if (!userId || !token) {
+      redirect('/')
+    }
+
+    try {
+      await updateUserSkills({ skills: finalPayload, userId, token })
+
+      router.refresh()
+      form.reset()
+      toast.success('Skills updated successfully')
+    } catch (error) {
+      toast.error('Failed to save skills. Please try again.')
+      return
+    }
+  }
 
   return (
     <Form {...form}>
@@ -170,6 +223,7 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
                             <Button
                               variant="outline"
                               role="combobox"
+                              disabled={isSubmitting}
                               className={cn(
                                 'w-full justify-between',
                                 !field.value && 'text-muted-foreground'
@@ -226,6 +280,7 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name={`skills.${index}.isOffered`}
@@ -233,6 +288,7 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md py-4">
                       <FormControl>
                         <Checkbox
+                          disabled={isSubmitting}
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
@@ -257,6 +313,7 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
                       <FormControl>
                         <Slider
                           min={1}
+                          disabled={isSubmitting}
                           max={10}
                           step={1}
                           defaultValue={[Number(value)]}
@@ -293,7 +350,9 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
             Add another skill +
           </Button>
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Loading...' : 'Save skills'}
+        </Button>
       </form>
     </Form>
   )

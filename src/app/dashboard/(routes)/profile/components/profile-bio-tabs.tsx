@@ -17,6 +17,7 @@ export function ProfileBioTabs({
       <TabsList className="w-full justify-start">
         <TabsTrigger value="generalInfo">General information</TabsTrigger>
         <TabsTrigger value="skills">Skills</TabsTrigger>
+        <TabsTrigger value="my-card">My card</TabsTrigger>
       </TabsList>
       <TabsContent value="generalInfo">
         <p className="my-8">
@@ -41,6 +42,16 @@ export function ProfileBioTabs({
         </p>
         <ProfileSkillsForm skills={skills} />
         {/* <ComboboxForm /> */}
+      </TabsContent>
+      <TabsContent value="my-card">
+        <p>
+          customize your card such as background image, border color, etc...
+        </p>
+        <p>
+          choose what to display to other users - skill that you are teaching,
+          that you are learning, tags
+        </p>
+        <p>request other skills / tags</p>
       </TabsContent>
     </Tabs>
   )
