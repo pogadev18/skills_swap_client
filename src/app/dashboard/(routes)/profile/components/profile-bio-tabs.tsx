@@ -2,13 +2,21 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { UserGeneralInfoForm } from './general-info-form'
+import { ProfileSkillsForm } from './skills-form'
 
-export function ProfileBioTabs({ initialData }: { initialData: any }) {
+export function ProfileBioTabs({
+  initialData,
+  skills
+}: {
+  initialData: any
+  skills: any
+}) {
   return (
     <Tabs defaultValue="generalInfo" className="w-[800px]">
       <TabsList className="w-full justify-start">
         <TabsTrigger value="generalInfo">General information</TabsTrigger>
         <TabsTrigger value="skills">Skills</TabsTrigger>
+        <TabsTrigger value="my-card">My card</TabsTrigger>
       </TabsList>
       <TabsContent value="generalInfo">
         <p className="my-8">
@@ -18,7 +26,32 @@ export function ProfileBioTabs({ initialData }: { initialData: any }) {
         </p>
         <UserGeneralInfoForm initialBioData={initialData} />
       </TabsContent>
-      <TabsContent value="skills">Skills form here</TabsContent>
+      <TabsContent value="skills">
+        <p className="mt-8">
+          Welcome to the Skills Tab! This is where the magic happens—your
+          personal skills showcase. Whether you are here to share your expertise
+          or eager to learn something new, this tab is your stepping stone to
+          meaningful exchanges within our community.
+        </p>
+        <p className="mt-3 mb-8">
+          Your profile will display the skills you are offering and seeking,
+          making it easier for like-minded Swappers to find and connect with
+          you. Dive in, set up your skills, and let the journey of teaching and
+          learning begin!
+        </p>
+        <ProfileSkillsForm skills={skills} />
+        {/* <ComboboxForm /> */}
+      </TabsContent>
+      <TabsContent value="my-card">
+        <p>
+          customize your card such as background image, border color, etc...
+        </p>
+        <p>
+          choose what to display to other users - skill that you are teaching,
+          that you are learning, tags
+        </p>
+        <p>request other skills / tags</p>
+      </TabsContent>
     </Tabs>
   )
 }

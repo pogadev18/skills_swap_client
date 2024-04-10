@@ -1,21 +1,33 @@
 'use sever'
 
-import { revalidatePath } from 'next/cache'
+// import { revalidatePath } from 'next/cache'
 import { api } from '@/lib/axiosConfig'
 
-// todo: generate types based on back-end schema
+// todo: BETTER TYPING BASED ON BACKEND!!!!!!
+type UserIdAndToken = {
+  userId: string
+  token: string
+}
+
 export type UserBioData = {
   bio: string
   meetingPreferance: 'in-person' | 'online' | 'hybrid'
   availability: string
 }
 
-type UpdateUserBioParams = {
-  userId: string
-  token: String
-} & UserBioData
+type UserSkillsData = {
+  skills: {
+    isOffered: boolean
+    weight: number
+    tagIds: string[]
+    skillId?: string | undefined
+  }[]
+}
 
-// this functions runs on the client in general-info-form.tsx
+type UpdateUserBioParams = UserIdAndToken & UserBioData
+type UpdateUserSkills = UserIdAndToken & UserSkillsData
+
+// ==== RUNS ON THE CLIENT ==== //
 export async function updateUserBio({
   bio,
   meetingPreferance,
@@ -24,7 +36,7 @@ export async function updateUserBio({
   token
 }: UpdateUserBioParams) {
   const res = await api.put(
-    `/user/${userId}`,
+    `/users/${userId}`,
     {
       bio,
       meetingPreferance,
@@ -40,12 +52,36 @@ export async function updateUserBio({
   return res.data
 }
 
-// this function runs on the server
-export async function getUserData(userId: string | null, token: string | null) {
-  const res = await api.get(`/user/${userId}`, {
+export async function updateUserSkills({
+  token,
+  userId,
+  skills
+}: UpdateUserSkills) {
+  const res = await api.put(`/users/${userId}/skills`, skills, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
+
+  return res.data
+}
+
+// ==== RUNS ON THE SERVER ==== //
+export async function getUserData(userId: string | null, token: string | null) {
+  const res = await api.get(`/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  return res.data
+}
+
+export async function getSkills(token: string | null) {
+  const res = await api.get('/skills', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
   return res.data
 }

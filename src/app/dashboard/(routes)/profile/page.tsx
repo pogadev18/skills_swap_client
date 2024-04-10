@@ -1,23 +1,20 @@
 import { auth } from '@clerk/nextjs'
-import { redirectToSignIn } from '@clerk/nextjs/server'
-import { getUserData } from '@/app/dashboard/dashboard-actions'
-
+import { getUserData, getSkills } from '@/app/dashboard/dashboard-actions'
 import { ProfileBioTabs } from './components/profile-bio-tabs'
 
 export default async function UserProfilePage() {
   const { getToken, userId } = auth()
   const jwt = await getToken()
 
-  if (!jwt || !userId) {
-    redirectToSignIn()
-  }
-
   // todo: type this - generate types based on the back-end schema
-  const userData = await getUserData(userId, jwt)
+  const [userData, skills] = await Promise.all([
+    getUserData(userId, jwt),
+    getSkills(jwt)
+  ])
 
   return (
     <>
-      <h1 className="text-4xl mb-4">Your SkillsSwap Profile</h1>
+      <h1 className="text-4xl mb-4">My SkillsSwap Profile</h1>
       <p className="text-lg w-[1000px]">
         In the heart of SkillsSwap lies a world of endless possibilities, where
         every exchange transforms into a journey of learning and growth. This is
@@ -28,7 +25,7 @@ export default async function UserProfilePage() {
       </p>
 
       <div className="mt-10">
-        <ProfileBioTabs initialData={userData} />
+        <ProfileBioTabs initialData={userData} skills={skills} />
       </div>
     </>
   )

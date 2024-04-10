@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { redirect, useParams, useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { ClipboardIcon } from 'lucide-react'
 import { useAuth } from '@clerk/nextjs'
 
@@ -67,7 +67,7 @@ type FormSchemaValues = z.infer<typeof formSchema>
 export function UserGeneralInfoForm({
   initialBioData
 }: UserGeneralInfoFormProps) {
-  const { isLoaded, userId, getToken } = useAuth()
+  const { userId, getToken } = useAuth()
 
   const router = useRouter()
 
@@ -110,11 +110,6 @@ export function UserGeneralInfoForm({
       toast.error('Failed to update biography. Please try again.')
       return
     }
-  }
-
-  // In case the user signs out while on the page.
-  if (!isLoaded || !userId) {
-    redirect('/')
   }
 
   return (
