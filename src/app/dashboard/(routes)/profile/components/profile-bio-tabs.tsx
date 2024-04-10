@@ -3,7 +3,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { UserGeneralInfoForm } from './general-info-form'
 import { ProfileSkillsForm } from './skills-form'
-// import { ComboboxForm } from './skills-form-test'
 
 export function ProfileBioTabs({
   initialData,

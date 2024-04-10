@@ -208,7 +208,6 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
                     <FormItem className="flex flex-col">
                       <FormLabel>Skill</FormLabel>
                       <Popover
-                        // the open state is not working for multiple popovers -> todo: fix
                         open={openPopoverIndex === index}
                         onOpenChange={(isOpen) => {
                           if (isOpen) {
