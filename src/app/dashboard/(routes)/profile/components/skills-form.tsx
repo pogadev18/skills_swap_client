@@ -74,24 +74,15 @@ export function ProfileSkillsForm({
         )
       )
       .min(1, { message: 'At least one skill is required' })
-      .refine(
-        () => {
-          const hasAtLeastOneOfferedSkill = userSkills.some(
-            (skill: any) => skill.isOffered
-          )
-
-          return hasAtLeastOneOfferedSkill
-        },
-        {
-          message: 'At least one skill should be offered by you'
-        }
-      )
   })
 
   type FormValues = z.infer<typeof formSchema>
 
   const { userId, getToken } = useAuth()
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null)
+  const [serverValidationError, setServerValidationError] = useState<
+    string | null
+  >(null)
   const router = useRouter()
 
   const form = useForm<FormValues>({
@@ -153,19 +144,19 @@ export function ProfileSkillsForm({
       router.refresh()
       form.reset()
       toast.success('Skills updated successfully')
+      setServerValidationError(null)
     } catch (error) {
       toast.error('Failed to save skills. Please try again.')
+      setServerValidationError(error.response.data.error)
+      console.log('server error', error)
       return
     }
   }
 
   return (
     <Form {...form}>
-      {userSkills.length === 0 || errors.skills?.root?.message ? (
-        <SkillsSubmisisonAlert
-          hasUserSubmittedSkills={userSkills.length === 0}
-          formErrorMessage={errors.skills?.root?.message}
-        />
+      {serverValidationError ? (
+        <SkillsSubmisisonAlert formErrorMessage={serverValidationError} />
       ) : null}
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
