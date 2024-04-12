@@ -39,7 +39,7 @@ import {
 } from '@/app/dashboard/dashboard-actions'
 
 type UserGeneralInfoFormProps = {
-  initialBioData?: UserBioData
+  userData?: UserBioData
 }
 
 const MEETING_PREFERANCES = [
@@ -64,27 +64,23 @@ const formSchema = z.object({
 
 type FormSchemaValues = z.infer<typeof formSchema>
 
-export function UserGeneralInfoForm({
-  initialBioData
-}: UserGeneralInfoFormProps) {
+export function UserGeneralInfoForm({ userData }: UserGeneralInfoFormProps) {
   const { userId, getToken } = useAuth()
 
   const router = useRouter()
 
-  const bioLabel = initialBioData ? 'Edit biography' : 'Add biography'
-  const preferanceOfMeetingLabel = initialBioData
+  const bioLabel = userData ? 'Edit biography' : 'Add biography'
+  const preferanceOfMeetingLabel = userData
     ? 'Edit your meeting preferance'
     : 'Select your meeting preferance'
-  const availabilityLabel = initialBioData
+  const availabilityLabel = userData
     ? 'Edit your availability'
     : 'Add your availability'
-  const toastMessage = initialBioData
-    ? 'Biography updated!'
-    : 'Biography created!'
-  const action = initialBioData ? 'Save changes' : 'Create biography'
+  const toastMessage = userData ? 'Biography updated!' : 'Biography created!'
+  const action = userData ? 'Save changes' : 'Create biography'
 
   const form = useForm<FormSchemaValues>({
-    defaultValues: initialBioData || {
+    defaultValues: userData || {
       bio: '',
       meetingPreferance: 'hybrid',
       availability: ''

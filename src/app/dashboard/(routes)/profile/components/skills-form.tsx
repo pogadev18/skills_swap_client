@@ -40,8 +40,8 @@ import {
   FormLabel
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { updateUserSkills } from '@/app/dashboard/dashboard-actions'
+import { SkillsSubmisisonAlert } from './skills-submission-alert'
 
 const skillObject = z.object({
   skillId: z.string().optional(),
@@ -54,30 +54,44 @@ const skillObject = z.object({
   tagIds: z.array(z.string())
 })
 
-const formSchema = z.object({
-  skills: z
-    .array(
-      skillObject.refine(
-        (data) => data.skillId !== undefined && data.skillId.trim().length > 0,
+export function ProfileSkillsForm({
+  allSkills,
+  userSkills
+}: {
+  allSkills: any
+  userSkills: any
+}) {
+  const formSchema = z.object({
+    skills: z
+      .array(
+        skillObject.refine(
+          (data) =>
+            data.skillId !== undefined && data.skillId.trim().length > 0,
+          {
+            message: 'Skill is required',
+            path: ['skillId'] // Point to the specific field
+          }
+        )
+      )
+      .min(1, { message: 'At least one skill is required' })
+      .refine(
+        () => {
+          const hasAtLeastOneOfferedSkill = userSkills.some(
+            (skill: any) => skill.isOffered
+          )
+
+          return hasAtLeastOneOfferedSkill
+        },
         {
-          message: 'Skill is required',
-          path: ['skillId'] // Point to the specific field
+          message: 'At least one skill should be offered by you'
         }
       )
-    )
-    .min(1, { message: 'At least one skill is required' })
-    .refine((skills) => skills.some((skill) => skill.isOffered), {
-      message: 'At least one skill should be offered by you'
-    })
-})
+  })
 
-type FormValues = z.infer<typeof formSchema>
+  type FormValues = z.infer<typeof formSchema>
 
-export function ProfileSkillsForm({ skills }: { skills: any }) {
   const { userId, getToken } = useAuth()
-
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null)
-
   const router = useRouter()
 
   const form = useForm<FormValues>({
@@ -107,7 +121,7 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
     tagIds: string[]
   }
 
-  const formSkills: FormSkill[] = skills.map(
+  const formSkills: FormSkill[] = allSkills.map(
     (skill: { id: string; name: string; tagIds: string[] }) => {
       return {
         label: skill.name,
@@ -118,31 +132,8 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
   )
 
   const onSubmit = async (data: FormValues) => {
-    /* chain of events:
-      1. user selects a skill in the form -> data.skills[index].skillId
-      2. I need to find the tagIds for that skill -> skills[index].tagIds = [tagId1, tagId2, tagId3, etc...]
-      3. I need to store the tagIds in the form payload
-      4. send the payload to the server: 
-        {
-          skills: [
-            {
-              skillId: 'skillId1',
-              isOffered: true,
-              weight: 10,
-              tagIds: ['tagId1', 'tagId2', 'tagId3']
-            },
-            {
-              skillId: 'skillId2',
-              isOffered: false,
-              weight: 5,
-              tagIds: ['tagId4', 'tagId5']
-            }
-          ]
-        }
-    */
-
     const finalPayload = data.skills.map((skill) => {
-      const selectedSkill = skills.find((s: any) => s.id === skill.skillId)
+      const selectedSkill = allSkills.find((s: any) => s.id === skill.skillId)
 
       return {
         ...skill,
@@ -170,17 +161,13 @@ export function ProfileSkillsForm({ skills }: { skills: any }) {
 
   return (
     <Form {...form}>
-      {errors.skills?.root?.message && (
-        <Alert variant="destructive" className="mb-3">
-          <AlertCircleIcon className="h-4 w-4" />
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>
-            In order to submit the form, you need to offer / teach at least one
-            skill. We recommend you to offer skills that you are proficient in
-            and we believe that you can help others grow.
-          </AlertDescription>
-        </Alert>
-      )}
+      {userSkills.length === 0 || errors.skills?.root?.message ? (
+        <SkillsSubmisisonAlert
+          hasUserSubmittedSkills={userSkills.length === 0}
+          formErrorMessage={errors.skills?.root?.message}
+        />
+      ) : null}
+
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="max-h-[820px] overflow-y-auto flex flex-col gap-5">
           {fields.map((field, index) => {

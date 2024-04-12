@@ -3,14 +3,17 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { UserGeneralInfoForm } from './general-info-form'
 import { ProfileSkillsForm } from './skills-form'
+import { UserCard } from './user-carad'
 
 export function ProfileBioTabs({
-  initialData,
+  userData,
   skills
 }: {
-  initialData: any
+  userData: any
   skills: any
 }) {
+  const { skills: userSkills } = userData
+
   return (
     <Tabs defaultValue="generalInfo" className="w-[800px]">
       <TabsList className="w-full justify-start">
@@ -24,7 +27,7 @@ export function ProfileBioTabs({
           this is where it begins to unfold. Fill out your general info to
           kickstart connections, discoveries, and a lifetime of learning.
         </p>
-        <UserGeneralInfoForm initialBioData={initialData} />
+        <UserGeneralInfoForm userData={userData} />
       </TabsContent>
       <TabsContent value="skills">
         <p className="mt-8">
@@ -39,18 +42,10 @@ export function ProfileBioTabs({
           you. Dive in, set up your skills, and let the journey of teaching and
           learning begin!
         </p>
-        <ProfileSkillsForm skills={skills} />
-        {/* <ComboboxForm /> */}
+        <ProfileSkillsForm allSkills={skills} userSkills={userSkills} />
       </TabsContent>
       <TabsContent value="my-card">
-        <p>
-          customize your card such as background image, border color, etc...
-        </p>
-        <p>
-          choose what to display to other users - skill that you are teaching,
-          that you are learning, tags
-        </p>
-        <p>request other skills / tags</p>
+        <UserCard userData={userData} />
       </TabsContent>
     </Tabs>
   )

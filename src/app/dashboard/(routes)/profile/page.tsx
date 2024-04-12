@@ -25,7 +25,7 @@ export default async function UserProfilePage() {
       </p>
 
       <div className="mt-10">
-        <ProfileBioTabs initialData={userData} skills={skills} />
+        <ProfileBioTabs userData={userData} skills={skills} />
       </div>
     </>
   )
