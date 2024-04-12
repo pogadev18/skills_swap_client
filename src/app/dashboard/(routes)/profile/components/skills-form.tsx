@@ -145,7 +145,8 @@ export function ProfileSkillsForm({
       form.reset()
       toast.success('Skills updated successfully')
       setServerValidationError(null)
-    } catch (error) {
+    } catch (error: any) {
+      // todo: type errors accordingly
       toast.error('Failed to save skills. Please try again.')
       setServerValidationError(error.response.data.error)
       console.log('server error', error)
