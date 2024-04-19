@@ -24,8 +24,14 @@ type UserSkillsData = {
   }[]
 }
 
+type UserCardData = {
+  isActive: boolean
+  shareableLink?: string
+}
+
 type UpdateUserBioParams = UserIdAndToken & UserBioData
 type UpdateUserSkills = UserIdAndToken & UserSkillsData
+type UpdateUserCard = UserIdAndToken & UserCardData
 
 // ==== RUNS ON THE CLIENT ==== //
 export async function updateUserBio({
@@ -62,6 +68,28 @@ export async function updateUserSkills({
       Authorization: `Bearer ${token}`
     }
   })
+
+  return res.data
+}
+
+export async function updateCardInfo({
+  isActive,
+  token,
+  userId,
+  shareableLink
+}: UpdateUserCard) {
+  const res = await api.put(
+    `/cards/${userId}`,
+    {
+      isActive,
+      shareableLink
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
 
   return res.data
 }

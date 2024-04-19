@@ -11,7 +11,7 @@ export default function DashboardLayout({
         <p className="font-bold mb-10">LOGO</p>
         <Navbar />
       </aside>
-      <section className="main-content flex-1 px-4 py-10">{children}</section>
+      <section className="main-content flex-1 px-8 py-10">{children}</section>
     </main>
   )
 }

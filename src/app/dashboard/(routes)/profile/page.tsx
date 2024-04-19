@@ -7,6 +7,8 @@ export default async function UserProfilePage() {
   const jwt = await getToken()
 
   // todo: type this - generate types based on the back-end schema
+  // todo: make card activate / deactivate -> wait 24h before deactivating it again
+  // todo: display tags and let user know that tags are important for visibility
   const [userData, skills] = await Promise.all([
     getUserData(userId, jwt),
     getSkills(jwt)
@@ -15,7 +17,7 @@ export default async function UserProfilePage() {
   return (
     <>
       <h1 className="text-4xl mb-4">My SkillsSwap Profile</h1>
-      <p className="text-lg w-[1000px]">
+      <p className="text-lg">
         In the heart of SkillsSwap lies a world of endless possibilities, where
         every exchange transforms into a journey of learning and growth. This is
         your gateway to a community that values knowledge, embraces diversity,
