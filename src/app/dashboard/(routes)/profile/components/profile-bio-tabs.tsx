@@ -4,7 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { UserGeneralInfoForm } from './general-info-form'
 import { ProfileSkillsForm } from './skills-form'
 import { UserCard } from './user-card'
-import { UpdateCardInfo } from './update-card-info'
+import { UpdateCardVisibility } from './update-card-visibility'
+import { Button } from '@/components/ui/button'
+import { TagManagement } from './tag-management'
 
 export function ProfileBioTabs({
   userData,
@@ -13,7 +15,6 @@ export function ProfileBioTabs({
   userData: any
   skills: any
 }) {
-  console.log('userData!!', userData)
   const { skills: userSkills } = userData
 
   return (
@@ -56,20 +57,8 @@ export function ProfileBioTabs({
           will see, so make it count!
         </p>
 
-        <p className="mb-3">
-          If you are happy with your card, you can share it with others by
-          copying the link below and sending it to your friends, family, or
-          anyone you want to connect with.
-        </p>
-
-        <p>
-          See how others will view your profile. Your card displays crucial
-          information including your offered skills, interests, and a brief bio.
-          Ensure it reflects your expertise and your eagerness to engage in
-          skill exchanges.
-        </p>
         <div className="mt-6 flex gap-20">
-          <div>
+          <div className="card-preview basis-[50%]">
             <h2 className="font-bold mb-2">Card Preview</h2>
             <p className="mb-3">
               Your card will showcase your general information and skills,
@@ -77,10 +66,22 @@ export function ProfileBioTabs({
               moment to review your card and ensure it reflects your unique
               personality and expertise.
             </p>
+            <p className="mb-3">
+              If you are happy with your card, you can share it with others by
+              copying the link below and sending it to your friends, family, or
+              anyone you want to connect with.
+            </p>
+            <Button className="mb-5" disabled>
+              card sharable link
+            </Button>
             <UserCard userData={userData} />
           </div>
-          <div>
-            <UpdateCardInfo />
+          <div className="card-visibility">
+            <UpdateCardVisibility userData={userData} />
+            <hr className="my-5" />
+            <div className="manage-tags">
+              <TagManagement userData={userData} />
+            </div>
           </div>
         </div>
       </TabsContent>

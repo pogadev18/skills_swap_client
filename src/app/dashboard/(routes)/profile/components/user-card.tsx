@@ -8,9 +8,6 @@ import { Button } from '@/components/ui/button'
 export function UserCard({ userData }: { userData: any }) {
   const { user } = useUser()
 
-  console.log('user data', userData)
-  console.log('clerk user', user)
-
   const teachingSkills = userData?.skills
     ?.filter((skill: any) => skill.isOffered === true)
     .map((skill: any) => skill.skill.name)
@@ -28,14 +25,13 @@ export function UserCard({ userData }: { userData: any }) {
   const meetingPreferance: string = userData.meetingPreferance.toUpperCase()
 
   return (
-    <div className="bg-white rounded shadow-lg max-w-lg">
-      
+    <div className="bg-white rounded shadow-lg max-w-[400px]">
       <div className="flex flex-col items-center">
         <div className="avatar-upload mb-4 text-center w-full">
           <Image
-            width={512}
-            height={500}
-            className="rounded"
+            width={200}
+            height={200}
+            className="rounded w-full h-full"
             src={user?.imageUrl || '/images/avatar-placeholder.png'}
             alt="Avatar"
           />

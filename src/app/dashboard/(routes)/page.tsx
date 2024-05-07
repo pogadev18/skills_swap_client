@@ -1,3 +1,3 @@
-export default async function DashboardPage() {
-  return <h1 className="text-4xl">Dashboard</h1>
+export default async function ExplorePage() {
+  return <h1 className="text-4xl">ExplorePage</h1>
 }

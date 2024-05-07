@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
-import { HomeIcon, UserRound, Handshake } from 'lucide-react'
+import { UserRound, Handshake, Globe2Icon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -17,9 +17,9 @@ export function MainNav({
   const routes = [
     {
       href: `/dashboard`,
-      label: 'Dashboard',
+      label: 'Home',
       active: pathname === `/dashboard`,
-      icon: <HomeIcon className="mr-2 h-5 w-5" />
+      icon: <Globe2Icon className="mr-2 h-5 w-5" />
     },
     {
       href: `/dashboard/profile`,
